@@ -98,30 +98,5 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(documents);
         }
 
-    
-
-
-        [FunctionName("deleterating")]
-        public async static Task<IActionResult> DeleteRating(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "{timestamp}/{id}")] HttpRequest req,
-        [CosmosDB(
-        databaseName: "MovieAppDB",
-        collectionName: "UserRating",
-        ConnectionStringSetting = "DatabaseConnectionString",
-        Id ="{id}",
-        PartitionKey ="{timestamp}")] UserRating item,
-        ILogger log)
-
-        {     
-            Container container = cosmosClient.GetContainer("MovieAppDB","UserRating");
- 
-            await container.DeleteItemAsync<UserRating>("1",new PartitionKey("timestamp"));
-            log.LogInformation("C# HTTP trigger function processed a request.An item has been deleted: ");
-            return new OkObjectResult("An item has been deleted: ");
-
-
-        }
-      
-   
         }
     }
