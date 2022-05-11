@@ -17,7 +17,7 @@
       "connectionId": "VaultUri"
     },
     "cosmosdb1": {
-      "secretStore": "AzureKeyVault",
+      "secretStore": "LocalSecretsFile",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.DocumentDB/databaseAccounts/movieappcosmos",
       "type": "cosmosdb.azure",
       "connectionId": "DatabaseConnectionString"
