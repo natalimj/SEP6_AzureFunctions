@@ -88,7 +88,7 @@ namespace SEP6_AzureFunctions
         databaseName: "MovieAppDB",
         collectionName: "UserList",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT c.listname FROM c where c.userid={userid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.userid={userid}")] IEnumerable<object> documents,
         ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request. / GetUserLists");
@@ -103,7 +103,7 @@ namespace SEP6_AzureFunctions
         databaseName: "MovieAppDB",
         collectionName: "UserList",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.userid={userid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT c.listname FROM c where c.userid={userid}")] IEnumerable<object> documents,
         ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request. / GetUserListNames");
