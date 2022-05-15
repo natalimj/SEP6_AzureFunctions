@@ -10,12 +10,6 @@
     "secrets1": {
       "type": "secrets.user"
     },
-    "secrets2": {
-      "secretStore": null,
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/SEP6Functionsvault",
-      "type": "secrets.keyVault",
-      "connectionId": "VaultUri"
-    },
     "cosmosdb1": {
       "secretStore": "LocalSecretsFile",
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.DocumentDB/databaseAccounts/movieappcosmos",
