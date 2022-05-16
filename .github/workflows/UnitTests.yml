@@ -28,6 +28,7 @@ jobs:
         id: PRNUMBER
         if: ${{ github.event_name == 'pull_request' }}
         uses: kkak10/pr-number-action@v1.3
+        
       - name: Set Test Title
         run: |
           if ${{ github.event_name == 'pull_request' }}
