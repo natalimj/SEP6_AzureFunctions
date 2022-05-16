@@ -10,5 +10,15 @@ namespace AzureFunctionsUnitTest
         {
             Assert.True(true);
         }
+        
+        public void Test2()
+        {
+            Assert.True(false);
+        }
+        
+        public void Test3()
+        {
+            Assert.True(true);
+        }
     }
 }
