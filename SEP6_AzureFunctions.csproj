@@ -30,4 +30,8 @@
     <Folder Include="UnitTests\bin" />
     <Folder Include="UnitTests\obj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include=".github\workflows\SEP6AzureFunctions.yml" />
+    <Content Include=".github\workflows\UnitTests.yml" />
+  </ItemGroup>
 </Project>
