@@ -67,12 +67,12 @@ namespace SEP6_AzureFunctions
 
         [FunctionName("GetProductionReview")]
         public static IActionResult GetProductionReview(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ProductionReview/{productionid}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ProductionReview/{productionid}/{type}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Review",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.productionid={productionid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and c.type={type}")] IEnumerable<object> documents,
         ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request./ GetProductionReviews");
