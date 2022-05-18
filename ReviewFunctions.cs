@@ -109,7 +109,7 @@ namespace SEP6_AzureFunctions
         }
 
         [FunctionName("DeleteReviewById")]
-        public static async Task<IActionResult> DDeleteReviewById(
+        public static async Task<IActionResult> DeleteReviewById(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "DeleteReviewById/{id}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
@@ -133,5 +133,23 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult("An item has been deleted: " + item.Id);
 
         }
+
+        //user's review for a movie - tvshow
+        [FunctionName("GetUserProductionReview")]
+        public static IActionResult GetUserProductionReview(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserReview/{productionid}/{userid}/{type}")] HttpRequest req,
+        [CosmosDB(
+        databaseName: "MovieAppDB",
+        collectionName: "Review",
+        ConnectionStringSetting = "DatabaseConnectionString",
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and c.userid={userid} and c.type = {type}")] IEnumerable<object> documents,
+        ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request./ UserReview");
+            return new OkObjectResult(documents);
+        }
+
+
+
     }
 }
