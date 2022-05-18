@@ -43,7 +43,8 @@ namespace SEP6_AzureFunctions
             {
                 id = System.Guid.NewGuid().ToString(),
                 userid = review.UserId,
-                movieid = review.MovieId,
+                productionid = review.ProductionId,
+                type= review.Type,
                 review = review.UserReview,
             });
 
@@ -68,22 +69,21 @@ namespace SEP6_AzureFunctions
         }
 
 
-        //all reviews for a movie
-        [FunctionName("GetMovieReview")]
-        public static IActionResult GetMovieReview(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "MovieReview/{movieid}")] HttpRequest req,
+        //all reviews for a movie -- tvshow
+        [FunctionName("GetProductionReview")]
+        public static IActionResult GetProductionReview(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ProductionReview/{productionid}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Review",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.movieid={movieid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid}")] IEnumerable<object> documents,
         ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request./ GetMovieReviews");
+            log.LogInformation("C# HTTP trigger function processed a request./ GetProductionReviews");
             return new OkObjectResult(documents);
         }
-
-        
+    
         [FunctionName("UpdateReview")]
         public static async Task<ActionResult<Review>> UpdateReview(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "UpdateReview")] HttpRequest req,
@@ -138,7 +138,8 @@ namespace SEP6_AzureFunctions
                 {
                     id = System.Guid.NewGuid().ToString(),
                     userid = review.UserId,
-                    movieid = review.MovieId,
+                    productionid = review.ProductionId,
+                    type = review.Type,
                     review = review.UserReview,
                 });
                 responseMessage = "This HTTP triggered function executed successfully. An item has been added: Review";
