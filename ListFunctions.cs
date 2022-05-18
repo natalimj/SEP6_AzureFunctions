@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -8,9 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SEP6_AzureFunctions.Models;
-using System.Collections.Generic;
 using Microsoft.Azure.Cosmos;
-using System.Linq;
+
 
 namespace SEP6_AzureFunctions
 {
@@ -125,13 +121,13 @@ namespace SEP6_AzureFunctions
         }
 
         [FunctionName("GetProductionsInListById")]
-        public static IActionResult GetMoviesInListById(
+        public static IActionResult GetProductionsInListById(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetProductionsInListById/{id}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "UserList",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT c FROM c where c.id={id}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.id={id}")] IEnumerable<object> documents,
         ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request. / GetProductionsInListById");
