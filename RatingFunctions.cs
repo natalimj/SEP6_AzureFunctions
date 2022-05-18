@@ -41,7 +41,8 @@ namespace SEP6_AzureFunctions
             {
                 id = System.Guid.NewGuid().ToString(),
                 userid = rating.UserId,
-                movieid = rating.MovieId,
+                productionid = rating.ProductionId,
+                type = rating.Type,
                 rating = rating.UserRating,
             });
 
@@ -102,12 +103,12 @@ namespace SEP6_AzureFunctions
    
         [FunctionName("DeleteRating")]
         public static async Task<IActionResult> DeleteRating(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "DeleteRating/{movieid}/{userid}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "DeleteRating/{productionid}/{userid}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Rating",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.movieid={movieid} and  c.userid={userid}")] IEnumerable<Rating> documents,
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and  c.userid={userid}")] IEnumerable<Rating> documents,
         ILogger log)
         {
 
@@ -140,34 +141,34 @@ namespace SEP6_AzureFunctions
         }
 
 
-        //all ratings for a movie
-        [FunctionName("GetMovieRatings")]
-        public static IActionResult GetMovieRatings(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetMovieRatings/{movieid}")] HttpRequest req,
+        //all ratings for a movie - tvshow
+        [FunctionName("GetProductionRatings")]
+        public static IActionResult GetProductionRatings(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetProductionRatings/{productionid}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Rating",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.movieid={movieid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid}")] IEnumerable<object> documents,
         ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request./ GetMovieRatings");
+            log.LogInformation("C# HTTP trigger function processed a request./ GetProductionRatings");
             return new OkObjectResult(documents);
         }
 
 
-        //user's rating for a movie
-        [FunctionName("getusermovieratings")]
-        public static IActionResult GetUserMovieRatings(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserMovieRating/{movieid}/{userid}")] HttpRequest req,
+        //user's rating for a movie - tvshow
+        [FunctionName("GetUserProductionRating")]
+        public static IActionResult GetUserProductionRating(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserProductionRating/{productionid}/{userid}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Rating",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.movieid={movieid} and  c.userid={userid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and  c.userid={userid}")] IEnumerable<object> documents,
         ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request./ GetUserMovieRatings");
+            log.LogInformation("C# HTTP trigger function processed a request./ GetUserProductionRatings");
             return new OkObjectResult(documents);
         }
 
@@ -228,7 +229,8 @@ namespace SEP6_AzureFunctions
                 {
                     id = System.Guid.NewGuid().ToString(),
                     userid = rating.UserId,
-                    movieid = rating.MovieId,
+                    productionid = rating.ProductionId,
+                    type = rating.Type,
                     rating = rating.UserRating
                 }); 
                 responseMessage = "This HTTP triggered function executed successfully. An item has been added: Rating";
