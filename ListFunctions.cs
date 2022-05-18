@@ -114,7 +114,7 @@ namespace SEP6_AzureFunctions
         databaseName: "MovieAppDB",
         collectionName: "UserList",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT c.listItems FROM c where c.id={id}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT c FROM c where c.id={id}")] IEnumerable<object> documents,
         ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request. / GetProductionsInListById");
