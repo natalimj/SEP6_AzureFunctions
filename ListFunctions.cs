@@ -83,7 +83,7 @@ namespace SEP6_AzureFunctions
         //get User lists - only list names
         [FunctionName("GetUserLists")]
         public static IActionResult GetUserLists(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetUserLists/{userid}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserLists/{userid}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "UserList",
@@ -91,7 +91,7 @@ namespace SEP6_AzureFunctions
         SqlQuery = "SELECT * FROM c where c.userid={userid}")] IEnumerable<object> documents,
         ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request. / GetUserLists");
+            log.LogInformation("C# HTTP trigger function processed a request. / UserLists");
             return new OkObjectResult(documents);
         }
 
