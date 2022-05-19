@@ -76,7 +76,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(responseMessage);
         }
 
-
         [FunctionName("GetListById")]
         public static IActionResult GetListById(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetList/{id}")] HttpRequest req,
@@ -113,7 +112,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(documents);
         }
 
-        // get user lists
         [FunctionName("GetUserListNames")]
         public static IActionResult GetUserListNames(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetUserListNames/{userid}")] HttpRequest req,
@@ -177,7 +175,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult("An item has been deleted: " + userList.Id);
 
         }
-
 
         [FunctionName("AddOrUpdateList")]
         public static async Task<ActionResult<UserList>> AddOrUpdateList(
