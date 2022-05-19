@@ -74,7 +74,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(responseMessage);
         }
 
-
         [FunctionName("GetListById")]
         public static IActionResult GetListById(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetList/{id}")] HttpRequest req,
