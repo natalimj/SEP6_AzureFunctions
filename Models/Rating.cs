@@ -1,22 +1,22 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace SEP6_AzureFunctions.Models
 {
     public class Rating
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("userid")]
+        [JsonProperty("userid")]
         public string UserId { get; set; }
 
-        [JsonPropertyName("productionid")]
+        [JsonProperty("productionid")]
         public string ProductionId { get; set; }
 
-        [JsonPropertyName("type")]
+        [JsonProperty("type")]
         public string Type { get; set; }
 
-        [JsonPropertyName("rating")]
+        [JsonProperty("rating")]
         public int UserRating { get; set; }
     }
 }
