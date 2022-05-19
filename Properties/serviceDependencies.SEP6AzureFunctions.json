@@ -4,6 +4,12 @@
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/sep6azurefunctions",
       "type": "storage.azure",
       "connectionId": "AzureWebJobsStorage"
+    },
+    "secrets1": {
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/Sep6KeyVault",
+      "type": "secrets.keyVault",
+      "connectionId": "VaultUri"
     }
   }
 }
