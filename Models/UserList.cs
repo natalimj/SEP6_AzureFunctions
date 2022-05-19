@@ -1,21 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
+﻿using Newtonsoft.Json;
 
 namespace SEP6_AzureFunctions.Models
 {
     public class UserList
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("userid")]
+        [JsonProperty("userid")]
         public string UserId { get; set; }
 
-        [JsonPropertyName("listname")]
+        [JsonProperty("listname")]
         public string ListName { get; set; }
 
-        [JsonPropertyName("listItems")]
+        [JsonProperty("listItems")]
         public List<ListItem> ListItems { get; set; }
 
     }
