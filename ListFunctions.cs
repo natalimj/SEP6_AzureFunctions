@@ -35,7 +35,7 @@ namespace SEP6_AzureFunctions
 
             await documentsOut.AddAsync(new
             {
-                id = System.Guid.NewGuid().ToString(),
+                id = userList.Id,
                 userid = userList.UserId,
                 listname = userList.ListName,
                 listItems = userList.ListItems
