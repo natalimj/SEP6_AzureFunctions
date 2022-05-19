@@ -38,7 +38,7 @@ namespace SEP6_AzureFunctions
                 id = System.Guid.NewGuid().ToString(),
                 userid = userList.UserId,
                 listname = userList.ListName,
-                listItems = new List<ListItem>()
+                listItems = userList.ListItems
             }) ;
             
             string responseMessage = "This HTTP triggered function executed successfully. An item has been added: UserList";
@@ -72,6 +72,29 @@ namespace SEP6_AzureFunctions
             string responseMessage = "This HTTP triggered function executed successfully. An item has been updated : UserList";
 
             return new OkObjectResult(responseMessage);
+        }
+
+
+        [FunctionName("GetListById")]
+        public static IActionResult GetListById(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetList/{id}")] HttpRequest req,
+        [CosmosDB(
+        databaseName: "MovieAppDB",
+        collectionName: "UserList",
+        ConnectionStringSetting = "DatabaseConnectionString",
+        Id ="{id}",
+        PartitionKey ="{id}")] Rating item,
+        ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request./ GetListById");
+
+            if (item == null)
+            {
+                return new NotFoundResult();
+            }
+
+            return new ObjectResult(item);
+
         }
 
         [FunctionName("GetUserLists")]
