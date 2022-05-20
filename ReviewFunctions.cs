@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using Microsoft.Azure.Cosmos;
 using SEP6_AzureFunctions.Models;
 
-
 namespace SEP6_AzureFunctions
 {
     public static class ReviewFunctions
@@ -131,7 +130,6 @@ namespace SEP6_AzureFunctions
 
         }
 
-        //user's review for a movie - tvshow
         [FunctionName("GetUserProductionReview")]
         public static IActionResult GetUserProductionReview(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserReview/{productionid}/{userid}/{type}")] HttpRequest req,
