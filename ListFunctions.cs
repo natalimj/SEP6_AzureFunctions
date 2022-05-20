@@ -187,6 +187,5 @@ namespace SEP6_AzureFunctions
 
         }
 
-
     }
 }
