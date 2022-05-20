@@ -18,7 +18,7 @@ namespace SEP6_AzureFunctions
 
         //static CosmosClient cosmosClient = new CosmosClient("accountEndPoint", "authKeyCosmos");
         static CosmosClient cosmosClient = new CosmosClient("https://movieappcosmos.documents.azure.com:443/", 
-            "Kow0snAPedc58qJU7BNSMuAyCIXVTX9QWvKVWwQExrPv35T8N6Q5thHerSo7Ow8YXvrK68oV6PXW8UtKC1Jvpw==");
+            Environment.GetEnvironmentVariable("CosmosKey"));
         static Container container = cosmosClient.GetContainer("MovieAppDB", "Review");
 
 
@@ -170,6 +170,7 @@ namespace SEP6_AzureFunctions
         PartitionKey ="{id}")] Review item,
         ILogger log)
         {
+            Console.WriteLine(Environment.GetEnvironmentVariable("CosmosKey"));
             log.LogInformation("C# HTTP trigger function processed a request./DeleteRatingById");
 
             if (item == null)

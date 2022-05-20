@@ -1,8 +1,5 @@
 {
   "dependencies": {
-    "appInsights1": {
-      "type": "appInsights.sdk"
-    },
     "storage1": {
       "type": "storage.emulator",
       "connectionId": "AzureWebJobsStorage"
@@ -15,6 +12,12 @@
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.DocumentDB/databaseAccounts/movieappcosmos",
       "type": "cosmosdb.azure",
       "connectionId": "DatabaseConnectionString"
+    },
+    "secrets2": {
+      "secretStore": null,
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/Sep6KeyVault",
+      "type": "secrets.keyVault",
+      "connectionId": "VaultUri"
     }
   }
 }
