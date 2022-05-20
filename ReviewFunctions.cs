@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -9,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.Azure.Cosmos;
 using SEP6_AzureFunctions.Models;
-using System.Collections.Generic;
+
 
 namespace SEP6_AzureFunctions
 {
@@ -67,12 +64,12 @@ namespace SEP6_AzureFunctions
 
         [FunctionName("GetProductionReview")]
         public static IActionResult GetProductionReview(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ProductionReview/{productionid}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ProductionReview/{productionid}/{type}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Review",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.productionid={productionid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and c.type={type}")] IEnumerable<object> documents,
         ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request./ GetProductionReviews");
@@ -109,7 +106,7 @@ namespace SEP6_AzureFunctions
         }
 
         [FunctionName("DeleteReviewById")]
-        public static async Task<IActionResult> DDeleteReviewById(
+        public static async Task<IActionResult> DeleteReviewById(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "DeleteReviewById/{id}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
@@ -133,5 +130,23 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult("An item has been deleted: " + item.Id);
 
         }
+
+        //user's review for a movie - tvshow
+        [FunctionName("GetUserProductionReview")]
+        public static IActionResult GetUserProductionReview(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserReview/{productionid}/{userid}/{type}")] HttpRequest req,
+        [CosmosDB(
+        databaseName: "MovieAppDB",
+        collectionName: "Review",
+        ConnectionStringSetting = "DatabaseConnectionString",
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and c.userid={userid} and c.type = {type}")] IEnumerable<object> documents,
+        ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request./ UserReview");
+            return new OkObjectResult(documents);
+        }
+
+
+
     }
 }

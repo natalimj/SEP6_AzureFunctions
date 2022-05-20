@@ -1,16 +1,11 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Microsoft.Azure.Cosmos;
-using System.Collections.Generic;
 using SEP6_AzureFunctions.Models;
-using System.Linq;
+using Newtonsoft.Json;
 
 namespace SEP6_AzureFunctions
 {
@@ -126,7 +121,7 @@ namespace SEP6_AzureFunctions
 
         [FunctionName("GetUserRatings")]
         public static IActionResult GetUserRatings(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetUserRatings/{userid}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserRatings/{userid}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Rating",
@@ -134,35 +129,35 @@ namespace SEP6_AzureFunctions
         SqlQuery = "SELECT * FROM c where c.userid={userid}")] IEnumerable<object> documents,
         ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request. / GetUserRatings");
+            log.LogInformation("C# HTTP trigger function processed a request. / UserRatings");
             return new OkObjectResult(documents);
         }
 
         [FunctionName("GetProductionRatings")]
         public static IActionResult GetProductionRatings(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetProductionRatings/{productionid}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ProductionRatings/{productionid}/{type}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Rating",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.productionid={productionid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and c.type={type}")] IEnumerable<object> documents,
         ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request./ GetProductionRatings");
+            log.LogInformation("C# HTTP trigger function processed a request./ ProductionRatings");
             return new OkObjectResult(documents);
         }
 
         [FunctionName("GetUserProductionRating")]
         public static IActionResult GetUserProductionRating(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserProductionRating/{productionid}/{userid}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserRating/{productionid}/{userid}/{type}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "Rating",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and  c.userid={userid}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT * FROM c where c.productionid={productionid} and c.userid={userid} and c.type = {type}")] IEnumerable<object> documents,
         ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request./ GetUserProductionRatings");
+            log.LogInformation("C# HTTP trigger function processed a request./ UserRating");
             return new OkObjectResult(documents);
         }
 
