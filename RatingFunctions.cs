@@ -119,8 +119,6 @@ namespace SEP6_AzureFunctions
 
         }
 
-
-        //all ratings by a user
         [FunctionName("GetUserRatings")]
         public static IActionResult GetUserRatings(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserRatings/{userid}")] HttpRequest req,
@@ -135,8 +133,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(documents);
         }
 
-
-        //all ratings for a movie - tvshow
         [FunctionName("GetProductionRatings")]
         public static IActionResult GetProductionRatings(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ProductionRatings/{productionid}/{type}")] HttpRequest req,
@@ -151,8 +147,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(documents);
         }
 
-
-        //user's rating for a movie - tvshow
         [FunctionName("GetUserProductionRating")]
         public static IActionResult GetUserProductionRating(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserRating/{productionid}/{userid}/{type}")] HttpRequest req,
@@ -166,8 +160,6 @@ namespace SEP6_AzureFunctions
             log.LogInformation("C# HTTP trigger function processed a request./ UserRating");
             return new OkObjectResult(documents);
         }
-
-
 
         [FunctionName("UpdateRating")]
         public static async Task<ActionResult<Rating>> UpdateRating(
@@ -193,52 +185,6 @@ namespace SEP6_AzureFunctions
 
             
             string responseMessage = "This HTTP triggered function executed successfully. An item has been updated : Rating";
-
-            return new OkObjectResult(responseMessage);
-        }
-
-        [FunctionName("AddOrUpdateRating")]
-        public static async Task<ActionResult<Rating>> AddOrUpdateRating(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "AddOrUpdateRating")] HttpRequest req,
-        [CosmosDB(
-        databaseName: "MovieAppDB",
-        collectionName: "Rating",
-        ConnectionStringSetting = "DatabaseConnectionString")] IAsyncCollector<object> documentsOut,
-        ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request./ AddRating");
-            string requestBody = String.Empty;
-            using (StreamReader streamReader = new StreamReader(req.Body))
-            {
-                requestBody = await streamReader.ReadToEndAsync();
-            }
-            Rating rating = JsonConvert.DeserializeObject<Rating>(requestBody);
-
-            Console.WriteLine(rating.Id);
-
-            string responseMessage = String.Empty;
-
-            if (rating.Id == null)
-            {
-                await documentsOut.AddAsync(new
-                {
-                    id = System.Guid.NewGuid().ToString(),
-                    userid = rating.UserId,
-                    productionid = rating.ProductionId,
-                    type = rating.Type,
-                    rating = rating.UserRating
-                }); 
-                responseMessage = "This HTTP triggered function executed successfully. An item has been added: Rating";
-
-            } else {
-
-                ItemResponse<Rating> response = await container.PatchItemAsync<Rating>(
-                id: rating.Id,
-                partitionKey:  new Microsoft.Azure.Cosmos.PartitionKey(rating.Id),
-                patchOperations: new[] { PatchOperation.Replace("/rating",rating.UserRating ) });
-
-                responseMessage = "This HTTP triggered function executed successfully. An item has been updated: Rating";
-            }
 
             return new OkObjectResult(responseMessage);
         }

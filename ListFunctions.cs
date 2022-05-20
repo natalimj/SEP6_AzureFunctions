@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -5,8 +8,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SEP6_AzureFunctions.Models;
+using System.Collections.Generic;
 using Microsoft.Azure.Cosmos;
-
+using System.Linq;
 
 namespace SEP6_AzureFunctions
 {
@@ -16,7 +20,6 @@ namespace SEP6_AzureFunctions
             Environment.GetEnvironmentVariable("CosmosKey"));
         static Container container = cosmosClient.GetContainer("MovieAppDB", "UserList");
        
-        //create an empty list
         [FunctionName("CreateList")]
         public static async Task<ActionResult<UserList>> CreateList(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "CreateList")] HttpRequest req,
@@ -36,10 +39,10 @@ namespace SEP6_AzureFunctions
 
             await documentsOut.AddAsync(new
             {
-                id = userList.Id,
+                id = System.Guid.NewGuid().ToString(),
                 userid = userList.UserId,
                 listname = userList.ListName,
-                listItems = userList.ListItems
+                listItems = new List<ListItem>()
             }) ;
             
             string responseMessage = "This HTTP triggered function executed successfully. An item has been added: UserList";
@@ -47,7 +50,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(responseMessage);
         }
      
-        //add movie or tvshow to the list
         [FunctionName("UpdateList")]
         public static async Task<ActionResult<UserList>> UpdateList(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "UpdateList")] HttpRequest req,
@@ -76,31 +78,9 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(responseMessage);
         }
 
-        [FunctionName("GetListById")]
-        public static IActionResult GetListById(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetList/{id}")] HttpRequest req,
-        [CosmosDB(
-        databaseName: "MovieAppDB",
-        collectionName: "UserList",
-        ConnectionStringSetting = "DatabaseConnectionString",
-        Id ="{id}",
-        PartitionKey ="{id}")] Rating item,
-        ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request./ GetListById");
-
-            if (item == null)
-            {
-                return new NotFoundResult();
-            }
-
-            return new ObjectResult(item);
-
-        }
-
         [FunctionName("GetUserLists")]
         public static IActionResult GetUserLists(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserLists/{userid}")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetUserLists/{userid}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "UserList",
@@ -108,23 +88,10 @@ namespace SEP6_AzureFunctions
         SqlQuery = "SELECT * FROM c where c.userid={userid}")] IEnumerable<object> documents,
         ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request. / UserLists");
+            log.LogInformation("C# HTTP trigger function processed a request. / GetUserLists");
             return new OkObjectResult(documents);
         }
 
-        [FunctionName("GetUserListNames")]
-        public static IActionResult GetUserListNames(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetUserListNames/{userid}")] HttpRequest req,
-        [CosmosDB(
-        databaseName: "MovieAppDB",
-        collectionName: "UserList",
-        ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT c.listname FROM c where c.userid={userid}")] IEnumerable<object> documents,
-        ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request. / GetUserListNames");
-            return new OkObjectResult(documents);
-        }
 
         [FunctionName("GetProductionsInList")]
         public static IActionResult GetProductionsInList(
@@ -141,13 +108,13 @@ namespace SEP6_AzureFunctions
         }
 
         [FunctionName("GetProductionsInListById")]
-        public static IActionResult GetProductionsInListById(
+        public static IActionResult GetMoviesInListById(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetProductionsInListById/{id}")] HttpRequest req,
         [CosmosDB(
         databaseName: "MovieAppDB",
         collectionName: "UserList",
         ConnectionStringSetting = "DatabaseConnectionString",
-        SqlQuery = "SELECT * FROM c where c.id={id}")] IEnumerable<object> documents,
+        SqlQuery = "SELECT c.listItems FROM c where c.id={id}")] IEnumerable<object> documents,
         ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request. / GetProductionsInListById");
@@ -176,52 +143,6 @@ namespace SEP6_AzureFunctions
 
         }
 
-        [FunctionName("AddOrUpdateList")]
-        public static async Task<ActionResult<UserList>> AddOrUpdateList(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "AddOrUpdateList")] HttpRequest req,
-        [CosmosDB(
-        databaseName: "MovieAppDB",
-        collectionName: "UserList",
-        ConnectionStringSetting = "DatabaseConnectionString")] IAsyncCollector<object> documentsOut,
-        ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request./ AddOrUpdateList");
-            string requestBody = String.Empty;
-            using (StreamReader streamReader = new StreamReader(req.Body))
-            {
-                requestBody = await streamReader.ReadToEndAsync();
-            }
-            UserList userList = JsonConvert.DeserializeObject<UserList>(requestBody);
-
-
-            string responseMessage = String.Empty;
-
-            if (userList.Id == null)
-            {
-                await documentsOut.AddAsync(new
-                {
-                    id = System.Guid.NewGuid().ToString(),
-                    userid = userList.UserId,
-                    listname = userList.ListName,
-                    listItems = new List<ListItem>()
-                });
-                responseMessage = "This HTTP triggered function executed successfully. An item has been added: List";
-
-            }
-            else
-            {
-
-               ItemResponse<UserList> response = await container.PatchItemAsync<UserList>(
-               id: userList.Id,
-               partitionKey: new PartitionKey(userList.Id),
-               patchOperations: new[] { PatchOperation.Replace("/listItems", userList.ListItems) });
-
-               responseMessage = "This HTTP triggered function executed successfully. An item has been updated: List";
-            }
-
-            return new OkObjectResult(responseMessage);
-        }
-
         [FunctionName("DeleteListById")]
         public static async Task<IActionResult> DeleteListById(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "DeleteListById/{id}")] HttpRequest req,
@@ -247,7 +168,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult("An item has been deleted: " + item.Id);
 
         }
-
 
     }
 }
