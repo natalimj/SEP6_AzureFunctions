@@ -51,7 +51,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(responseMessage);
         }
 
-        //all reviews by a user
         [FunctionName("GetUserReviews")]
         public static IActionResult GetUserReviews(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "UserReviews/{userid}")] HttpRequest req,
@@ -66,8 +65,6 @@ namespace SEP6_AzureFunctions
             return new OkObjectResult(documents);
         }
 
-
-        //all reviews for a movie -- tvshow
         [FunctionName("GetProductionReview")]
         public static IActionResult GetProductionReview(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ProductionReview/{productionid}")] HttpRequest req,
@@ -108,52 +105,6 @@ namespace SEP6_AzureFunctions
            
             string responseMessage = "This HTTP triggered function executed successfully. An item has been updated :Review";
 
-            return new OkObjectResult(responseMessage);
-        }
-
-        [FunctionName("AddOrUpdateReview")]
-        public static async Task<ActionResult<Review>> AddOrUpdateReview(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "AddOrUpdateReview")] HttpRequest req,
-        [CosmosDB(
-        databaseName: "MovieAppDB",
-        collectionName: "Review",
-        ConnectionStringSetting = "DatabaseConnectionString")]IAsyncCollector<dynamic> documentsOut,
-        ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request./ AddReview");
-            string requestBody = String.Empty;
-            using (StreamReader streamReader = new StreamReader(req.Body))
-            {
-                requestBody = await streamReader.ReadToEndAsync();
-            }
-            Review review = JsonConvert.DeserializeObject<Review>(requestBody);
-
-            string responseMessage = String.Empty;
-
-            if (review.Id == null)
-            {
-                await documentsOut.AddAsync(new
-                {
-                    id = System.Guid.NewGuid().ToString(),
-                    userid = review.UserId,
-                    productionid = review.ProductionId,
-                    type = review.Type,
-                    review = review.UserReview,
-                });
-                responseMessage = "This HTTP triggered function executed successfully. An item has been added: Review";
-
-            } else {
-
-
-              ItemResponse<Review> response = await container.PatchItemAsync<Review>(
-              id: review.Id,
-              partitionKey: new PartitionKey(review.Id),
-              patchOperations: new[] { PatchOperation.Replace("/review", review.UserReview) });
-
-              responseMessage = "This HTTP triggered function executed successfully. An item has been updated: Review";
-
-            }
-          
             return new OkObjectResult(responseMessage);
         }
 
