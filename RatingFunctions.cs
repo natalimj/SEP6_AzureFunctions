@@ -11,8 +11,8 @@ namespace SEP6_AzureFunctions
 {
     public static class RatingFunctions
     {
-        static CosmosClient cosmosClient = new CosmosClient("https://movieappcosmos.documents.azure.com:443/", 
-            "Kow0snAPedc58qJU7BNSMuAyCIXVTX9QWvKVWwQExrPv35T8N6Q5thHerSo7Ow8YXvrK68oV6PXW8UtKC1Jvpw==");
+        static CosmosClient cosmosClient = new CosmosClient("https://movieappcosmos.documents.azure.com:443/",
+            Environment.GetEnvironmentVariable("CosmosKey"));
         static Container container = cosmosClient.GetContainer("MovieAppDB", "Rating");
 
         [FunctionName("AddRating")]
